@@ -51,7 +51,7 @@ export const createBooking = async (req, res) => {
       actionType: 'booking_completed',
       metadata: {category: event.category}
     })
-    const {User} = await import('../models/User.js')
+    const {User} = await import('../models/user.model.js')
     await User.findByIdAndUpdate(req.user._id, {
       $addToSet: {categoryPreferences: event.category}
     })
