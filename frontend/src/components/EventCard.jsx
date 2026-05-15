@@ -44,7 +44,7 @@ const EventCard = ({ event, className = '' }) => {
         </div>
 
         <Link 
-          to={`/events/${event.id}`}
+          to={`/event/${event.id}`}
           className="block w-full text-center py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-medium transition-colors"
         >
           View Details

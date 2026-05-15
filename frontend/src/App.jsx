@@ -11,6 +11,9 @@ import AttenderHub from './pages/AttenderHub';
 import CreatorHub from './pages/CreatorHub';
 import AdminCommand from './pages/AdminCommand';
 import UserProfile from './pages/UserProfile';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Events from './pages/Events';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -38,6 +41,9 @@ function App() {
         <main className="flex-grow pt-24 pb-12">
           <Routes>
             <Route path="/" element={<Home/>} />
+            <Route path="/about" element={<About/>} />
+            <Route path="/contact" element={<Contact/>} />
+            <Route path="/events" element={<Events/>} />
             <Route path="/auth" element={<Auth/>} />
             <Route path="/explore" element={<Explore/>} />
             <Route path="/event/:id" element={<EventDetails/>} />
