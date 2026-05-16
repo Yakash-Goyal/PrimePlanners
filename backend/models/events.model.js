@@ -80,41 +80,45 @@ const EventSchema = new mongoose.Schema({
 // Final Price = basePrice × demandMultiplier × timeMultiplier × categoryMultiplier
 
 EventSchema.methods.getCurrentPrice = function () {
-    // Demand Multiplier (based on seat occupancy)
-    const fillRate = this.bookedSeats / this.totalSeats
-    let demandMultiplier = 1.0
-    if (fillRate >= 0.9) demandMultiplier = 2.5      
-    else if (fillRate >= 0.7) demandMultiplier = 2.0 
-    else if (fillRate >= 0.4) demandMultiplier = 1.5
 
-    // Time Multiplier (closer to event date = higher price)
-    const daysUntilEvent = Math.ceil((this.date - Date.now()) / (1000 * 60 * 60 * 24))
-    let timeMultiplier = 1.0
-    if (daysUntilEvent <= 1) timeMultiplier = 2.0 
-    else if (daysUntilEvent <= 3) timeMultiplier = 1.7
-    else if (daysUntilEvent <= 7) timeMultiplier = 1.4 
-    else if (daysUntilEvent <= 14) timeMultiplier = 1.2 
+  const fillRate = this.bookedSeats / this.totalSeats
+  let demandMultiplier = 1.0
+  if (fillRate >= 0.9) demandMultiplier = 2.0
+  else if (fillRate >= 0.7) demandMultiplier = 1.6
+  else if (fillRate >= 0.5) demandMultiplier = 1.3
+  else if (fillRate >= 0.3) demandMultiplier = 1.1
 
-    // Category Multiplier (based on historical demand)
-    const categoryMultipliers = {
-        'Concert': 1.3,
-        'Festival': 1.2,
-        'Wedding': 1.1,
-        'Private Party': 1.0,
-        'Corporate': 0.9
-    }
+  const daysUntilEvent = Math.ceil((this.date - Date.now()) / (1000 * 60 * 60 * 24))
+  let timeMultiplier = 1.0
+  if (fillRate >= 0.3) {
+    if (daysUntilEvent <= 1) timeMultiplier = 1.5
+    else if (daysUntilEvent <= 3) timeMultiplier = 1.3
+    else if (daysUntilEvent <= 7) timeMultiplier = 1.15
+    else if (daysUntilEvent <= 14) timeMultiplier = 1.05
+  }
 
-    const categoryMultiplier = categoryMultipliers[this.category] || 1.0
-    const finalPrice = Math.round(this.basePrice * demandMultiplier * timeMultiplier * categoryMultiplier)
-    return{
-        finalPrice,
-        basePrice: this.basePrice,
-        demandMultiplier,
-        timeMultiplier,
-        categoryMultiplier,
-        fillRate: Math.round(fillRate * 100), // as percentage
-        seatsRemaining: this.totalSeats - this.bookedSeats
-    }
+  const categoryMultipliers = {
+    'Concert': 1.05,
+    'Festival': 1.05,
+    'Wedding': 1.02,
+    'Private Party': 1.0,
+    'Corporate': 0.98
+  }
+  const categoryMultiplier = categoryMultipliers[this.category] || 1.0
+
+  const finalPrice = Math.round(
+    this.basePrice * demandMultiplier * timeMultiplier * categoryMultiplier
+  )
+
+  return {
+    finalPrice,
+    basePrice: this.basePrice,
+    demandMultiplier,
+    timeMultiplier,
+    categoryMultiplier,
+    fillRate: Math.round(fillRate * 100),
+    seatsRemaining: this.totalSeats - this.bookedSeats
+  }
 }
 
 export const Event = mongoose.model('Event', EventSchema)
