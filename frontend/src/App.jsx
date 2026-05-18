@@ -1,5 +1,7 @@
-import {BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom';
-import {useEffect} from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -19,7 +21,7 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
-  },[pathname]);
+  }, [pathname]);
   return null;
 };
 
@@ -33,30 +35,41 @@ const BackgroundBlobs = () => (
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <BackgroundBlobs />
-      <div className="flex flex-col min-h-screen bg-surface-dim text-on-background">
-        <Navbar />
-        <main className="flex-grow pt-24 pb-12">
-          <Routes>
-            <Route path="/" element={<Home/>} />
-            <Route path="/about" element={<About/>} />
-            <Route path="/contact" element={<Contact/>} />
-            <Route path="/events" element={<Events/>} />
-            <Route path="/auth" element={<Auth/>} />
-            <Route path="/explore" element={<Explore/>} />
-            <Route path="/event/:id" element={<EventDetails/>} />
-            <Route path="/create-event" element={<CreateEvent/>} />
-            <Route path="/attender" element={<AttenderHub/>} />
-            <Route path="/creator" element={<CreatorHub/>} />
-            <Route path="/admin" element={<AdminCommand/>} />
-            <Route path="/profile" element={<UserProfile/>} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <BackgroundBlobs />
+        <div className="flex flex-col min-h-screen bg-surface-dim text-on-background">
+          <Navbar />
+          <main className="flex-grow pt-24 pb-12">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route path="/event/:id" element={<EventDetails />} />
+              
+              <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<UserProfile />} />
+              </Route>
+              <Route element={<ProtectedRoute allowedRoles={['attender']} />}>
+                <Route path="/attender" element={<AttenderHub />} />
+              </Route>
+              <Route element={<ProtectedRoute allowedRoles={['creator']} />}>
+                <Route path="/creator" element={<CreatorHub />} />
+                <Route path="/create-event" element={<CreateEvent />} />
+              </Route>
+              <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+                <Route path="/admin" element={<AdminCommand />} />
+              </Route>
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
