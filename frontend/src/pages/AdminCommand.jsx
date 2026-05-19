@@ -1,4 +1,31 @@
+import {useEffect, useState} from 'react';
+import api from '../api/axios';
+
 const AdminCommand = () => {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const { data } = await api.get('/analytics/overview');
+        setStats(data);
+      } catch (error) {
+        console.error('Failed to fetch admin stats', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  },[]);
+
+  if(loading){
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-error border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8">
       <div className="flex justify-between items-center mb-8">
@@ -8,18 +35,22 @@ const AdminCommand = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <div className="glass-panel p-6 rounded-xl border-l-4 border-l-error">
           <h3 className="text-on-surface-variant font-label-md uppercase">Platform Revenue</h3>
-          <p className="text-4xl text-white font-bold mt-2">₹1.5Cr</p>
+          <p className="text-4xl text-white font-bold mt-2">₹{stats?.totalRevenue?.toLocaleString() || 0}</p>
         </div>
         <div className="glass-panel p-6 rounded-xl border-l-4 border-l-white">
           <h3 className="text-on-surface-variant font-label-md uppercase">Active Users</h3>
-          <p className="text-4xl text-white font-bold mt-2">45.2k</p>
+          <p className="text-4xl text-white font-bold mt-2">{stats?.totalUsers || 0}</p>
         </div>
         <div className="glass-panel p-6 rounded-xl border-l-4 border-l-white">
-          <h3 className="text-on-surface-variant font-label-md uppercase">Pending Approvals</h3>
-          <p className="text-4xl text-white font-bold mt-2">12</p>
+          <h3 className="text-on-surface-variant font-label-md uppercase">Total Bookings</h3>
+          <p className="text-4xl text-white font-bold mt-2">{stats?.totalBookings || 0}</p>
+        </div>
+        <div className="glass-panel p-6 rounded-xl border-l-4 border-l-white">
+          <h3 className="text-on-surface-variant font-label-md uppercase">Active Events</h3>
+          <p className="text-4xl text-white font-bold mt-2">{stats?.totalEvents || 0}</p>
         </div>
       </div>
 
@@ -30,22 +61,7 @@ const AdminCommand = () => {
             <div className="flex gap-4 items-start border-b border-white/10 pb-4">
               <div className="w-2 h-2 rounded-full bg-tertiary mt-2"></div>
               <div>
-                <p className="text-white"><span className="font-bold">New Organizer:</span> Apex Entertainment Group registered.</p>
-                <p className="text-on-surface-variant text-sm mt-1">2 mins ago</p>
-              </div>
-            </div>
-            <div className="flex gap-4 items-start border-b border-white/10 pb-4">
-              <div className="w-2 h-2 rounded-full bg-primary mt-2"></div>
-              <div>
-                <p className="text-white"><span className="font-bold">Event Published:</span> Neon Dreams Techno Rave.</p>
-                <p className="text-on-surface-variant text-sm mt-1">1 hour ago</p>
-              </div>
-            </div>
-            <div className="flex gap-4 items-start">
-              <div className="w-2 h-2 rounded-full bg-error mt-2"></div>
-              <div>
-                <p className="text-white"><span className="font-bold">System Alert:</span> High traffic detected on payment gateway.</p>
-                <p className="text-on-surface-variant text-sm mt-1">5 hours ago</p>
+                <p className="text-white"><span className="font-bold">System Status:</span> All services operational.</p>
               </div>
             </div>
           </div>

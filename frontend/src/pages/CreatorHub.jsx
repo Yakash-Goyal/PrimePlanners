@@ -1,188 +1,151 @@
-import {useRef, useEffect} from 'react';
+import {useRef, useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import gsap from 'gsap';
+import api from '../api/axios';
+import {useAuth} from '../context/AuthContext';
 
 const CreatorHub = () => {
   const containerRef = useRef(null);
+  const { user } = useAuth();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from('.stagger-item', {
-        y: 20,
-        opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: 'power2.out',
-      });
-    }, containerRef);
-    return () => ctx.revert();
-  }, []);
+    const fetchMyEvents = async () => {
+      try{
+        const {data} = await api.get('/events');
+        const myEvents = data.events.filter(e => e.organizer?._id === user?._id);
+        setEvents(myEvents);
+      } catch(error){
+        console.error('Failed to fetch creator events', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (user?._id) {
+      fetchMyEvents();
+    }
+  },[user]);
+
+  useEffect(() => {
+    if(!loading){
+      const ctx = gsap.context(() => {
+        gsap.from('.stagger-item', {
+          y: 20,
+          opacity: 0,
+          duration: 0.5,
+          stagger: 0.1,
+          ease: 'power2.out',
+        });
+      }, containerRef);
+      return () => ctx.revert();
+    }
+  },[loading, events]);
+
+  if(loading){
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  const totalRevenue = events.reduce((sum, e) => sum + (e.bookedSeats * (e.pricing?.finalPrice || e.basePrice)), 0);
+  const totalTicketsSold = events.reduce((sum, e) => sum + e.bookedSeats, 0);
 
   return (
     <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8" ref={containerRef}>
-      <div className="flex justify-between items-center mb-8 stagger-item flex-wrap gap-4">
+      <div className="flex justify-between items-center mb-8 stagger-item">
         <div>
           <h1 className="font-display-md text-white">Creator Hub</h1>
           <p className="text-on-surface-variant mt-1">Manage your events and track performance.</p>
         </div>
         <div className="flex items-center gap-4">
-          <Link to="/create-event" className="px-6 py-3 bg-primary text-white rounded-xl neon-glow-primary hover:scale-105 transition-transform flex items-center gap-2 font-label-md uppercase tracking-wider">
+          <Link to="/create-event" className="bg-primary hover:bg-primary-fixed text-white px-6 py-2 rounded-full font-label-md uppercase tracking-wider transition-colors neon-glow-primary flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px]">add</span>
             Create Event
           </Link>
-          <Link to="/profile" className="w-12 h-12 rounded-full overflow-hidden border-2 border-secondary/50 hover:border-secondary transition-colors hover:shadow-[0_0_15px_rgba(0,183,255,0.3)] shrink-0">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Profile" className="w-full h-full object-cover" />
+          <Link to="/profile" className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/50 hover:border-primary transition-colors flex items-center justify-center bg-primary/20 hover:shadow-[0_0_15px_rgba(255,42,95,0.3)]">
+            <span className="text-xl font-bold text-primary">{user?.name?.charAt(0).toUpperCase()}</span>
           </Link>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 stagger-item">
-        <div className="glass-panel p-6 rounded-2xl border-t-2 border-t-primary relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors"></div>
-          <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider flex items-center gap-2">
-            <span className="material-symbols-outlined text-primary text-[18px]">payments</span> Total Revenue
-          </h3>
-          <p className="text-3xl text-white font-display-sm font-bold mt-3">₹12.4L</p>
-          <p className="text-primary text-xs mt-2 flex items-center gap-1 font-bold"><span className="material-symbols-outlined text-[14px]">trending_up</span> +14% this month</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 stagger-item">
+        <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-primary/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-150"></div>
+          <div className="flex items-center gap-4 mb-4 relative z-10">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <span className="material-symbols-outlined">account_balance_wallet</span>
+            </div>
+            <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider">Total Revenue</h3>
+          </div>
+          <p className="text-4xl text-white font-display-sm font-bold relative z-10">₹{totalRevenue.toLocaleString()}</p>
         </div>
         
-        <div className="glass-panel p-6 rounded-2xl border-t-2 border-t-tertiary relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-tertiary/10 rounded-full blur-2xl group-hover:bg-tertiary/20 transition-colors"></div>
-          <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider flex items-center gap-2">
-            <span className="material-symbols-outlined text-tertiary text-[18px]">event_available</span> Active Events
-          </h3>
-          <p className="text-3xl text-white font-display-sm font-bold mt-3">2</p>
-          <p className="text-on-surface-variant text-xs mt-2">1 event ending soon</p>
+        <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-tertiary/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-150"></div>
+          <div className="flex items-center gap-4 mb-4 relative z-10">
+            <div className="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+              <span className="material-symbols-outlined">confirmation_number</span>
+            </div>
+            <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider">Tickets Sold</h3>
+          </div>
+          <p className="text-4xl text-white font-display-sm font-bold relative z-10">{totalTicketsSold}</p>
         </div>
         
-        <div className="glass-panel p-6 rounded-2xl border-t-2 border-t-secondary relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl group-hover:bg-secondary/20 transition-colors"></div>
-          <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider flex items-center gap-2">
-            <span className="material-symbols-outlined text-secondary text-[18px]">confirmation_number</span> Tickets Sold
-          </h3>
-          <p className="text-3xl text-white font-display-sm font-bold mt-3">845</p>
-          <p className="text-secondary text-xs mt-2 flex items-center gap-1 font-bold"><span className="material-symbols-outlined text-[14px]">trending_up</span> +8% this week</p>
-        </div>
-        
-        <div className="glass-panel p-6 rounded-2xl border-t-2 border-t-white relative overflow-hidden group">
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors"></div>
-          <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider flex items-center gap-2">
-            <span className="material-symbols-outlined text-white text-[18px]">visibility</span> Page Views
-          </h3>
-          <p className="text-3xl text-white font-display-sm font-bold mt-3">15.2k</p>
-          <p className="text-on-surface-variant text-xs mt-2">Across all events</p>
+        <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-secondary/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 transition-transform group-hover:scale-150"></div>
+          <div className="flex items-center gap-4 mb-4 relative z-10">
+            <div className="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+              <span className="material-symbols-outlined">event</span>
+            </div>
+            <h3 className="text-on-surface-variant font-label-md uppercase tracking-wider">Active Events</h3>
+          </div>
+          <p className="text-4xl text-white font-display-sm font-bold relative z-10">{events.length}</p>
         </div>
       </div>
 
       <div className="flex items-center justify-between mb-6 stagger-item">
-        <h2 className="font-headline-lg text-white">Manage Events</h2>
-        <div className="flex gap-2">
-          <button className="w-10 h-10 rounded-lg bg-surface/50 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
-            <span className="material-symbols-outlined text-[20px]">filter_list</span>
-          </button>
-          <button className="w-10 h-10 rounded-lg bg-surface/50 border border-white/10 flex items-center justify-center text-on-surface-variant hover:text-white transition-colors">
-            <span className="material-symbols-outlined text-[20px]">more_horiz</span>
-          </button>
-        </div>
+        <h2 className="font-headline-lg text-white">My Events</h2>
       </div>
 
-      {/* Events Table */}
-      <div className="glass-panel rounded-2xl overflow-hidden stagger-item">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-white/5 border-b border-white/10 text-on-surface-variant font-label-md uppercase tracking-wider text-xs">
-                <th className="p-5 font-medium">Event Name</th>
-                <th className="p-5 font-medium">Date</th>
-                <th className="p-5 font-medium">Status</th>
-                <th className="p-5 font-medium">Tickets Sold</th>
-                <th className="p-5 font-medium">Revenue</th>
-                <th className="p-5 font-medium text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-on-surface text-sm">
-              <tr className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                <td className="p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-surface-variant overflow-hidden shrink-0">
-                      <img src="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?auto=format&fit=crop&w=100&q=80" alt="Event" className="w-full h-full object-cover" />
-                    </div>
-                    <span className="font-bold text-white group-hover:text-primary transition-colors">Midnight Synthesis</span>
-                  </div>
-                </td>
-                <td className="p-5 text-on-surface-variant">Oct 24, 2026</td>
-                <td className="p-5">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-xs uppercase tracking-wider border border-green-500/20 font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span> Published
-                  </span>
-                </td>
-                <td className="p-5">
-                  <div className="flex flex-col gap-1">
-                    <span>2,125 / 2,500</span>
-                    <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-primary w-[85%] rounded-full"></div>
-                    </div>
-                  </div>
-                </td>
-                <td className="p-5 font-mono text-secondary">₹53.1L</td>
-                <td className="p-5">
-                  <div className="flex items-center justify-center gap-2">
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors" title="Edit">
-                      <span className="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors" title="Analytics">
-                      <span className="material-symbols-outlined text-[16px]">bar_chart</span>
-                    </button>
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors" title="More">
-                      <span className="material-symbols-outlined text-[16px]">more_vert</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr className="hover:bg-white/5 transition-colors group">
-                <td className="p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded bg-surface-variant flex items-center justify-center shrink-0 border border-dashed border-white/20">
-                      <span className="material-symbols-outlined text-on-surface-variant">image</span>
-                    </div>
-                    <span className="font-bold text-white group-hover:text-primary transition-colors">New Year Eve Bash</span>
-                  </div>
-                </td>
-                <td className="p-5 text-on-surface-variant">Dec 31, 2026</td>
-                <td className="p-5">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-yellow-500/10 text-yellow-400 rounded-full text-xs uppercase tracking-wider border border-yellow-500/20 font-bold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Draft
-                  </span>
-                </td>
-                <td className="p-5">
-                  <div className="flex flex-col gap-1 text-on-surface-variant">
-                    <span>0 / 500</span>
-                    <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-surface-variant w-[0%] rounded-full"></div>
-                    </div>
-                  </div>
-                </td>
-                <td className="p-5 font-mono text-on-surface-variant">₹0</td>
-                <td className="p-5">
-                  <div className="flex items-center justify-center gap-2">
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors" title="Edit">
-                      <span className="material-symbols-outlined text-[16px]">edit</span>
-                    </button>
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-white hover:bg-white/10 transition-colors" title="Publish">
-                      <span className="material-symbols-outlined text-[16px]">publish</span>
-                    </button>
-                    <button className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors" title="Delete">
-                      <span className="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      {events.length === 0 ? (
+        <div className="text-center py-20 stagger-item">
+          <p className="text-on-surface-variant text-lg">You have not created any events yet.</p>
+          <Link to="/create-event" className="inline-block mt-4 text-primary hover:text-white transition-colors">Create Your First Event</Link>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-item">
+          {events.map(event => {
+            const eventDate = new Date(event.date);
+            return (
+              <div key={event._id} className="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row gap-6 items-center sm:items-stretch relative overflow-hidden group">
+                <div className="w-full sm:w-48 h-48 sm:h-auto rounded-xl overflow-hidden shrink-0 relative">
+                  <img src={event.image || `https://source.unsplash.com/random/400x400/?${event.category}`} alt="Event" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute top-2 left-2 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold border border-white/10 uppercase">
+                    {eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </div>
+                </div>
+                <div className="flex flex-col flex-grow justify-center py-2 gap-3 w-full">
+                  <div>
+                    <h4 className="text-white font-title-lg line-clamp-1">{event.title}</h4>
+                    <p className="text-on-surface-variant text-sm mt-1 flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[16px]">group</span>
+                      {event.bookedSeats} / {event.totalSeats} Sold
+                    </p>
+                  </div>
+                  <div className="mt-auto flex gap-3">
+                    <Link to={`/event/${event._id}`} className="flex-1 py-2 text-center bg-primary/20 text-primary border border-primary/50 rounded-lg hover:bg-primary hover:text-white transition-colors font-label-md uppercase text-sm">
+                      Manage Event
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
