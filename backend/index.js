@@ -13,7 +13,7 @@ import analyticsRoutes from './routes/analyticsRoutes.js'
 let app = express()
 
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: process.env.FRONTEND_URL || '*'
 }))
 app.use(express.json())
 
