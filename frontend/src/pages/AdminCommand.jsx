@@ -37,8 +37,9 @@ const AdminCommand = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
         <div className="glass-panel p-6 rounded-xl border-l-4 border-l-error">
-          <h3 className="text-on-surface-variant font-label-md uppercase">Platform Revenue</h3>
-          <p className="text-4xl text-white font-bold mt-2">₹{stats?.totalRevenue?.toLocaleString() || 0}</p>
+          <h3 className="text-on-surface-variant font-label-md uppercase">Platform Revenue <span className="text-xs text-primary">(2% cut)</span></h3>
+          <p className="text-4xl text-white font-bold mt-2">₹{Math.round((stats?.totalRevenue || 0) * 0.02).toLocaleString()}</p>
+          <p className="text-on-surface-variant text-xs mt-1">Total Sales: ₹{stats?.totalRevenue?.toLocaleString() || 0}</p>
         </div>
         <div className="glass-panel p-6 rounded-xl border-l-4 border-l-white">
           <h3 className="text-on-surface-variant font-label-md uppercase">Active Users</h3>

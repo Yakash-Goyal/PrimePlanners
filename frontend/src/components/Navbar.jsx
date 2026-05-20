@@ -1,14 +1,22 @@
-import {Link, useNavigate} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 
 const Navbar = () => {
-  const {user,logout} = useAuth();
+  const {user, logout} = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
+  const linkClass = (path) =>
+    `font-label-md text-label-md tracking-widest uppercase transition-colors ${
+      location.pathname === path
+        ? 'text-primary'
+        : 'text-on-surface-variant hover:text-white'
+    }`;
 
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[95%] max-w-[1440px]">
@@ -17,22 +25,22 @@ const Navbar = () => {
           PRIME<span className="text-primary">PLANNERS</span>
         </Link>
         <div className="hidden lg:flex gap-6 items-center absolute left-1/2 -translate-x-1/2">
-          <Link to="/" className="font-label-md text-label-md text-primary tracking-widest uppercase hover:text-white transition-colors">Home</Link>
-          <Link to="/about" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">About</Link>
-          <Link to="/events" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">Events</Link>
-          <Link to="/explore" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">Explore</Link>
+          <Link to="/" className={linkClass('/')}>Home</Link>
+          <Link to="/about" className={linkClass('/about')}>About</Link>
+          <Link to="/events" className={linkClass('/events')}>Events</Link>
+          <Link to="/explore" className={linkClass('/explore')}>Explore</Link>
           
           {user?.role === 'creator' && (
-            <Link to="/creator" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">Creator Hub</Link>
+            <Link to="/creator" className={linkClass('/creator')}>Creator Hub</Link>
           )}
           {user?.role === 'attender' && (
-            <Link to="/attender" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">My Tickets</Link>
+            <Link to="/attender" className={linkClass('/attender')}>My Tickets</Link>
           )}
           {user?.role === 'admin' && (
-            <Link to="/admin" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">Admin</Link>
+            <Link to="/admin" className={linkClass('/admin')}>Admin</Link>
           )}
 
-          <Link to="/contact" className="font-label-md text-label-md text-on-surface-variant tracking-widest uppercase hover:text-white transition-colors">Contact</Link>
+          <Link to="/contact" className={linkClass('/contact')}>Contact</Link>
         </div>
         <div className="flex gap-6 items-center">
           {user ? (

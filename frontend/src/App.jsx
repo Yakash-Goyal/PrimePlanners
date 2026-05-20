@@ -57,7 +57,7 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={['attender']} />}>
                 <Route path="/attender" element={<AttenderHub />} />
               </Route>
-              <Route element={<ProtectedRoute allowedRoles={['creator']} />}>
+              <Route element={<ProtectedRoute allowedRoles={['creator', 'admin']} />}>
                 <Route path="/creator" element={<CreatorHub />} />
                 <Route path="/create-event" element={<CreateEvent />} />
               </Route>
