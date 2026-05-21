@@ -102,7 +102,7 @@ const Home = () => {
                   type="text"
                 />
               </div>
-              <Link to="/explore" className="bg-primary text-white px-10 py-4 rounded-full font-label-md text-label-md uppercase tracking-[0.2em] font-bold hover:brightness-110 transition-all flex items-center gap-3 neon-glow-primary">
+              <Link to="/events" className="bg-primary text-white px-10 py-4 rounded-full font-label-md text-label-md uppercase tracking-[0.2em] font-bold hover:brightness-110 transition-all flex items-center gap-3 neon-glow-primary">
                 Find Events
                 <span className="material-symbols-outlined text-lg">trending_flat</span>
               </Link>
@@ -122,7 +122,7 @@ const Home = () => {
               <h2 className="font-display-md text-display-md text-white tracking-tight uppercase">Featured Events</h2>
               <p className="font-body-lg text-on-surface-variant mt-2">The hottest tickets in town right now.</p>
             </div>
-            <Link to="/explore" className="text-primary hover:text-white font-label-md uppercase tracking-widest flex items-center gap-2 transition-colors neon-text-glow">
+            <Link to="/events" className="text-primary hover:text-white font-label-md uppercase tracking-widest flex items-center gap-2 transition-colors neon-text-glow">
               View All
               <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>

@@ -6,7 +6,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
-import Explore from './pages/Explore';
+import MyEvents from './pages/MyEvents';
 import EventDetails from './pages/EventDetails';
 import CreateEvent from './pages/CreateEvent';
 import AttenderHub from './pages/AttenderHub';
@@ -48,7 +48,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/events" element={<Events />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/explore" element={<Explore />} />
+              <Route path="/my-events" element={<MyEvents />} />
               <Route path="/event/:id" element={<EventDetails />} />
               
               <Route element={<ProtectedRoute />}>

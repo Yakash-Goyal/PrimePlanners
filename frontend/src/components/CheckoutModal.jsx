@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
 import gsap from 'gsap';
 import api from '../api/axios';
 
@@ -7,6 +8,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
   const [selectedTickets, setSelectedTickets] = useState(tickets);
   const [bookingId, setBookingId] = useState('');
   const modalRef = useRef(null);
+  const navigate = useNavigate();
 
   const subtotal = ticketPrice * selectedTickets;
   const serviceFee = Math.round(subtotal * 0.02);
@@ -160,7 +162,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
             </div>
 
             <button
-              onClick={onClose}
+              onClick={() => { onClose(); navigate('/my-events'); }}
               className="w-full py-4 mt-2 bg-white/10 text-white font-label-lg uppercase tracking-wide rounded-xl hover:bg-white/20 transition-all border border-white/20"
             >
               View My Tickets

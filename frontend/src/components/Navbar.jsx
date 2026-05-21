@@ -28,7 +28,7 @@ const Navbar = () => {
           <Link to="/" className={linkClass('/')}>Home</Link>
           <Link to="/about" className={linkClass('/about')}>About</Link>
           <Link to="/events" className={linkClass('/events')}>Events</Link>
-          <Link to="/explore" className={linkClass('/explore')}>Explore</Link>
+          <Link to="/my-events" className={linkClass('/my-events')}>My Events</Link>
           
           {user?.role === 'creator' && (
             <Link to="/creator" className={linkClass('/creator')}>Creator Hub</Link>
