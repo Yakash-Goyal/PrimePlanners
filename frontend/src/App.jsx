@@ -9,6 +9,7 @@ import Auth from './pages/Auth';
 import MyEvents from './pages/MyEvents';
 import EventDetails from './pages/EventDetails';
 import CreateEvent from './pages/CreateEvent';
+import EditEvent from './pages/EditEvent';
 import AttenderHub from './pages/AttenderHub';
 import CreatorHub from './pages/CreatorHub';
 import AdminCommand from './pages/AdminCommand';
@@ -60,6 +61,7 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={['creator', 'admin']} />}>
                 <Route path="/creator" element={<CreatorHub />} />
                 <Route path="/create-event" element={<CreateEvent />} />
+                <Route path="/edit-event/:id" element={<EditEvent />} />
               </Route>
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin" element={<AdminCommand />} />

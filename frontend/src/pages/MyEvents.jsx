@@ -223,10 +223,16 @@ const MyEvents = () => {
                       </div>
                       <div className="mt-auto flex gap-3">
                         <Link
+                          to={`/edit-event/${event._id}`}
+                          className="flex-1 py-2 text-center bg-secondary/20 text-secondary border border-secondary/50 rounded-lg hover:bg-secondary hover:text-white transition-colors font-label-md uppercase text-sm"
+                        >
+                          Edit
+                        </Link>
+                        <Link
                           to={`/event/${event._id}`}
                           className="flex-1 py-2 text-center bg-primary/20 text-primary border border-primary/50 rounded-lg hover:bg-primary hover:text-white transition-colors font-label-md uppercase text-sm"
                         >
-                          Manage
+                          View
                         </Link>
                       </div>
                     </div>
