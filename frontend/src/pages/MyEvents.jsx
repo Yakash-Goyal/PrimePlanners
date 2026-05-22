@@ -234,6 +234,20 @@ const MyEvents = () => {
                         >
                           View
                         </Link>
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm(`Delete "${event.title}"? This action cannot be undone.`)) return;
+                            try {
+                              await api.delete(`/events/${event._id}`);
+                              setCreatedEvents(prev => prev.filter(e => e._id !== event._id));
+                            } catch (err) {
+                              alert(err.response?.data?.message || 'Failed to delete event');
+                            }
+                          }}
+                          className="py-2 px-3 bg-white/5 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 hover:border-red-500/60 transition-colors font-label-md uppercase text-sm flex items-center justify-center"
+                        >
+                          <span className="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
                       </div>
                     </div>
                   </div>
