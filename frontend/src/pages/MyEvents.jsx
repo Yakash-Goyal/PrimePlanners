@@ -159,6 +159,20 @@ const MyEvents = () => {
                         >
                           Event Details
                         </Link>
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm('Are you sure you want to cancel this booking? This cannot be undone.')) return;
+                            try {
+                              await api.delete(`/bookings/${booking._id}`);
+                              setBookings(prev => prev.map(b => b._id === booking._id ? { ...b, status: 'cancelled' } : b));
+                            } catch (err) {
+                              alert(err.response?.data?.message || 'Failed to cancel booking');
+                            }
+                          }}
+                          className="flex-1 py-2 text-center bg-white/5 text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/20 hover:border-red-500/60 transition-colors font-label-md uppercase text-sm"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   </div>
