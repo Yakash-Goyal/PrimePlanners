@@ -1,5 +1,5 @@
-import {useEffect, useRef} from 'react';
-import {Link} from 'react-router-dom';
+import {useEffect, useRef, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import gsap from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
 
@@ -8,6 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 const Home = () => {
   const containerRef = useRef(null);
   const heroRef = useRef(null);
+  const [heroSearch, setHeroSearch] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -100,12 +102,15 @@ const Home = () => {
                   className="bg-transparent border-none text-white placeholder:text-on-surface-variant/50 focus:ring-0 flex-1 py-4 font-body-lg text-body-lg outline-none" 
                   placeholder="What are you looking for?" 
                   type="text"
+                  value={heroSearch}
+                  onChange={(e) => setHeroSearch(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/events${heroSearch.trim() ? `?search=${encodeURIComponent(heroSearch.trim())}` : ''}`); }}
                 />
               </div>
-              <Link to="/events" className="bg-primary text-white px-10 py-4 rounded-full font-label-md text-label-md uppercase tracking-[0.2em] font-bold hover:brightness-110 transition-all flex items-center gap-3 neon-glow-primary">
+              <button onClick={() => navigate(`/events${heroSearch.trim() ? `?search=${encodeURIComponent(heroSearch.trim())}` : ''}`)} className="bg-primary text-white px-10 py-4 rounded-full font-label-md text-label-md uppercase tracking-[0.2em] font-bold hover:brightness-110 transition-all flex items-center gap-3 neon-glow-primary">
                 Find Events
                 <span className="material-symbols-outlined text-lg">trending_flat</span>
-              </Link>
+              </button>
             </div>
           </div>
         </div>

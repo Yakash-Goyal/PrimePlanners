@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
 import EventCard from '../components/EventCard';
 import { Search, Filter } from 'lucide-react';
@@ -7,11 +8,12 @@ import api from '../api/axios';
 const Events = () => {
   const headerRef = useRef(null);
   const gridRef = useRef(null);
+  const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState('All');
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(searchParams.get('search') || '')
 
   const categories = ['All', 'Concert', 'Wedding', 'Corporate', 'Private Party', 'Festival'];
 
