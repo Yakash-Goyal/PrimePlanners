@@ -4,10 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 
 const UserProfile = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [activeTab, setActiveTab] = useState('profile');
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [profileName, setProfileName] = useState(user?.name || '');
+  const [profileBio, setProfileBio] = useState(user?.bio || '');
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState('');
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -40,6 +44,20 @@ const UserProfile = () => {
   const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
   const totalSpent = confirmedBookings.reduce((sum, b) => sum + (b.totalPrice || 0), 0);
   const joinedYear = user?.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear();
+
+  const handleSaveProfile = async () => {
+    setSaving(true);
+    setSaveMsg('');
+    try {
+      await updateUser({ name: profileName, bio: profileBio });
+      setSaveMsg('Profile updated successfully!');
+      setTimeout(() => setSaveMsg(''), 3000);
+    } catch (err) {
+      setSaveMsg(err.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8" ref={containerRef}>
@@ -93,10 +111,10 @@ const UserProfile = () => {
           {activeTab === 'profile' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <h2 className="font-headline-lg text-white mb-6">Personal Information</h2>
-              <form className="flex flex-col gap-6">
+              <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(); }} className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Full Name</label>
-                  <input type="text" defaultValue={user?.name || ''} className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:shadow-[0_0_15px_rgba(255,42,95,0.3)] transition-all" />
+                  <input type="text" value={profileName} onChange={(e) => setProfileName(e.target.value)} className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:shadow-[0_0_15px_rgba(255,42,95,0.3)] transition-all" />
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Email Address</label>
@@ -108,9 +126,18 @@ const UserProfile = () => {
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Bio</label>
-                  <textarea rows="4" placeholder="Tell us about yourself..." className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:shadow-[0_0_15px_rgba(255,42,95,0.3)] transition-all resize-none"></textarea>
+                  <textarea rows="4" value={profileBio} onChange={(e) => setProfileBio(e.target.value)} placeholder="Tell us about yourself..." className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary focus:shadow-[0_0_15px_rgba(255,42,95,0.3)] transition-all resize-none"></textarea>
                 </div>
-                <button type="button" className="mt-4 px-8 py-3 bg-primary text-white rounded-xl font-label-md uppercase tracking-widest neon-glow-primary hover:scale-105 transition-transform w-fit">Save Changes</button>
+                <div className="flex items-center gap-4">
+                  <button type="submit" disabled={saving} className="px-8 py-3 bg-primary text-white rounded-xl font-label-md uppercase tracking-widest neon-glow-primary hover:scale-105 transition-transform w-fit disabled:opacity-50 disabled:cursor-not-allowed">
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                  {saveMsg && (
+                    <span className={`text-sm font-medium ${saveMsg.includes('success') ? 'text-green-400' : 'text-red-400'}`}>
+                      {saveMsg}
+                    </span>
+                  )}
+                </div>
               </form>
             </div>
           )}

@@ -25,6 +25,12 @@ const UserSchema = new mongoose.Schema({
     default: 'attender'
   },
 
+  bio: {
+    type: String,
+    default: '',
+    maxlength: 300
+  },
+
   categoryPreferences: [{
     type: String,
     enum: ['Concert', 'Wedding', 'Corporate', 'Private Party', 'Festival']
