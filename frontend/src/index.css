@@ -113,6 +113,24 @@
     clip-path: polygon(0 100%, 100% 0, 100% 100%);
     margin-top: -99px;
   }
+  .neon-glow-pink {
+    box-shadow: 0 0 15px rgba(255, 45, 120, 0.4);
+  }
+  .neon-glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  }
+  .floating-label-input:focus ~ label,
+  .floating-label-input:not(:placeholder-shown) ~ label {
+    transform: translateY(-2.0rem) scale(0.85);
+    color: var(--color-primary);
+    background-color: #0c0d19;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    border-radius: 0.25rem;
+  }
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 45, 120, 0.5);
+  }
   .pulse-dot {
     animation: pulse 2s infinite;
   }
