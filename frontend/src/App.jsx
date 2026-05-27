@@ -17,6 +17,7 @@ import UserProfile from './pages/UserProfile';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Events from './pages/Events';
+import NotFound from './pages/NotFound';
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -66,6 +67,7 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
                 <Route path="/admin" element={<AdminCommand />} />
               </Route>
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />
