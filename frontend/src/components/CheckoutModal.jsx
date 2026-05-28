@@ -2,8 +2,10 @@ import {useState, useEffect, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import gsap from 'gsap';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
-const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventId})=>{
+const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventId, ticketType})=>{
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [selectedTickets, setSelectedTickets] = useState(tickets);
   const [bookingId, setBookingId] = useState('');
@@ -36,7 +38,8 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
     try{
       const res = await api.post('/bookings', {
         eventId: eventId,
-        seats: selectedTickets
+        seats: selectedTickets,
+        ticketType: ticketType
       });
       setBookingId(res.data.booking._id);
       setStep(3);
@@ -95,7 +98,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
 
             <div className="flex flex-col gap-3 font-body-md text-body-md border-t border-white/10 pt-4">
               <div className="flex justify-between text-on-surface-variant">
-                <span>{selectedTickets} x General Admission</span>
+                <span>{selectedTickets} x {ticketType || 'General Admission'}</span>
                 <span>₹{subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-on-surface-variant">
@@ -150,7 +153,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
             <div className="text-center">
               <h2 className="font-display-sm text-white mb-2">Payment Successful!</h2>
               <p className="text-on-surface-variant">
-                Your {selectedTickets} ticket(s) for {eventName} are confirmed.
+                Your {selectedTickets} x {ticketType || 'General Admission'} ticket(s) for {eventName} are confirmed.
               </p>
             </div>
 
@@ -162,7 +165,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
             </div>
 
             <button
-              onClick={() => { onClose(); navigate('/my-events'); }}
+              onClick={() => { onClose(); navigate(user?.role === 'attender' ? '/attender' : '/my-events'); }}
               className="w-full py-4 mt-2 bg-white/10 text-white font-label-lg uppercase tracking-wide rounded-xl hover:bg-white/20 transition-all border border-white/20"
             >
               View My Tickets

@@ -16,12 +16,18 @@ const BookingSchema = new mongoose.Schema({
   seats:{ 
     type: Number, 
     required: true
-},
+  },
+
+  ticketType: {
+    type: String,
+    required: true,
+    default: 'General Admission'
+  },
 
   totalPrice:{ 
     type: Number, 
     required: true
-},
+  },
 
   pricingSnapshot: {
     basePrice: Number,

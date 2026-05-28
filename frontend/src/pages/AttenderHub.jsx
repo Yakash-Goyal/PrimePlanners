@@ -17,14 +17,12 @@ import concertBg from '../assets/concert-bg.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── Static recommendation data ── */
 const recommendations = [
   { id: 1, title: 'Neon Pulse: Retro Revival', venue: 'Grand Central Loft', date: 'Oct 14', tag: 'Hot Vibe', tagColor: 'primary', image: recNeonClub },
   { id: 2, title: 'Midnight Sax & Synthesizers', venue: 'The Blue Room', date: 'Oct 18', tag: 'Chill Deep', tagColor: 'tertiary', image: recJazzLounge },
   { id: 3, title: 'Industrial Bass Night', venue: 'Warehouse District', date: 'Oct 22', tag: 'Techno Elite', tagColor: 'secondary', image: recTechnoArena },
   { id: 4, title: 'Founders Gala 2024', venue: 'The Glass Pavilion', date: 'Oct 30', tag: 'Elite Social', tagColor: 'primary', image: recGalaEvent },
 ];
-
 
 const AttenderHub = () => {
   const containerRef = useRef(null);
@@ -35,7 +33,6 @@ const AttenderHub = () => {
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(null);
 
-  /* ── Fetch bookings ── */
   useEffect(() => {
     const fetchBookings = async () => {
       try {
@@ -50,31 +47,22 @@ const AttenderHub = () => {
     fetchBookings();
   }, []);
 
-  /* ── GSAP animations ── */
   useEffect(() => {
     if (loading) return;
     const ctx = gsap.context(() => {
-      /* Header */
       gsap.fromTo('.hub-header', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
 
-      /* Stats cards */
       gsap.fromTo('.stat-card', { y: 50, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.12, ease: 'back.out(1.5)', delay: 0.2 });
 
-      /* Recommendation cards */
       gsap.fromTo('.rec-card', { y: 60, opacity: 0, scale: 0.9 }, { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'power3.out', delay: 0.4 });
 
-      /* Bookings table */
       gsap.fromTo('.bookings-section', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out', delay: 0.6 });
 
-      /* Table rows */
       gsap.fromTo('.booking-row', { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.8 });
-
-
     }, containerRef);
     return () => ctx.revert();
   }, [loading, bookings]);
 
-  /* ── Cancel booking handler ── */
   const handleCancel = async (bookingId) => {
     if (!window.confirm('Are you sure you want to cancel this booking?')) return;
     setCancelling(bookingId);
@@ -88,19 +76,15 @@ const AttenderHub = () => {
     }
   };
 
-  /* ── Horizontal scroll helper ── */
   const scroll = (dir) => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({ left: dir * 280, behavior: 'smooth' });
     }
   };
 
-  /* ── Derived stats ── */
   const totalTickets = bookings.reduce((sum, b) => sum + (b.seats || 1), 0);
   const upcomingCount = bookings.filter((b) => new Date(b.event?.date) > new Date()).length;
   const totalSpent = bookings.reduce((sum, b) => sum + (b.event?.price || 0) * (b.seats || 1), 0);
-
-  /* ── Status badge ── */
   const StatusBadge = ({ date }) => {
     const isUpcoming = new Date(date) > new Date();
     return isUpcoming ? (
@@ -124,16 +108,13 @@ const AttenderHub = () => {
 
   return (
     <div ref={containerRef} className="relative z-20 mt-[-96px] overflow-x-hidden min-h-screen bg-background text-on-surface">
-      {/* ═══════════ BACKGROUND ═══════════ */}
       <div className="fixed inset-0 z-[-10] overflow-hidden pointer-events-none">
         <img src={concertBg} alt="" className="w-full h-full object-cover opacity-20 grayscale-[50%] scale-110 blur-[2px]" />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background"></div>
       </div>
 
-      {/* ═══════════ MAIN CONTENT ═══════════ */}
       <main className="relative z-10 max-w-[1440px] mx-auto px-[16px] md:px-[40px] pt-32 pb-16 space-y-12">
 
-        {/* ── Dashboard Header ── */}
         <header className="hub-header flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="font-display-md text-display-md text-on-surface tracking-tight">
@@ -156,9 +137,7 @@ const AttenderHub = () => {
           </Link>
         </header>
 
-        {/* ── Stats Row ── */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-[24px]">
-          {/* Events Booked */}
           <div className="stat-card glass-card p-6 rounded-xl group hover:border-primary/50 transition-all duration-500">
             <div className="flex justify-between items-start mb-4">
               <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary neon-glow-primary">
@@ -170,7 +149,6 @@ const AttenderHub = () => {
             <p className="font-headline-lg text-headline-lg mt-1 group-hover:text-primary transition-colors">{bookings.length}</p>
           </div>
 
-          {/* Total Spent */}
           <div className="stat-card glass-card p-6 rounded-xl group hover:border-tertiary/50 transition-all duration-500">
             <div className="flex justify-between items-start mb-4">
               <div className="w-12 h-12 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary neon-glow-cyan">
@@ -184,7 +162,6 @@ const AttenderHub = () => {
             </p>
           </div>
 
-          {/* Upcoming */}
           <div className="stat-card glass-card p-6 rounded-xl group hover:border-secondary/50 transition-all duration-500">
             <div className="flex justify-between items-start mb-4">
               <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary neon-glow-purple">
@@ -199,7 +176,6 @@ const AttenderHub = () => {
           </div>
         </section>
 
-        {/* ── Recommended For You ── */}
         <section className="space-y-6">
           <div className="flex justify-between items-center px-2">
             <h2 className="font-headline-lg text-headline-lg">
@@ -241,7 +217,6 @@ const AttenderHub = () => {
           </div>
         </section>
 
-        {/* ── My Bookings ── */}
         <section className="bookings-section space-y-6">
           <h2 className="font-headline-lg text-headline-lg px-2">My Bookings</h2>
 
@@ -258,7 +233,6 @@ const AttenderHub = () => {
             </div>
           ) : (
             <>
-              {/* Desktop Table */}
               <div className="hidden md:block glass-card rounded-2xl overflow-hidden shadow-2xl">
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-white/5 border-b border-white/10">
@@ -298,7 +272,8 @@ const AttenderHub = () => {
                             <StatusBadge date={booking.event?.date} />
                           </td>
                           <td className="px-6 py-4 text-on-surface-variant">
-                            x{booking.seats || 1}
+                            <div className="font-bold">x{booking.seats || 1}</div>
+                            <div className="text-xs text-primary font-semibold">{booking.ticketType || 'General Admission'}</div>
                           </td>
                           <td className="px-6 py-4 text-right space-x-4">
                             <Link to={`/event/${booking.event?._id}`} className="text-primary hover:underline font-bold text-body-md transition-colors">
@@ -345,7 +320,10 @@ const AttenderHub = () => {
 
                       <div className="flex items-center justify-between text-sm text-on-surface-variant">
                         <span>{eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                        <span>x{booking.seats || 1} tickets</span>
+                        <div className="text-right">
+                          <div>x{booking.seats || 1} tickets</div>
+                          <div className="text-xs text-primary font-semibold">{booking.ticketType || 'General Admission'}</div>
+                        </div>
                       </div>
 
                       <div className="flex gap-3">

@@ -143,7 +143,7 @@ const MyEvents = () => {
                     <div className="flex flex-col flex-grow justify-center py-2 gap-3 w-full">
                       <div>
                         <span className="text-tertiary text-xs uppercase tracking-wider font-bold mb-1 block">
-                          General Admission × {booking.seats}
+                          {booking.ticketType || 'General Admission'} × {booking.seats}
                         </span>
                         <h4 className="text-white font-title-lg line-clamp-1">{booking.event?.title}</h4>
                         <p className="text-on-surface-variant text-sm mt-1 flex items-center gap-1">

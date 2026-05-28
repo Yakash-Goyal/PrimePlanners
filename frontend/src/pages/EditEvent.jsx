@@ -23,6 +23,15 @@ const EditEvent = () => {
     description: '',
     image: ''
   });
+  const [ticketTiers, setTicketTiers] = useState([]);
+
+  // Synchronize capacity field with the sum of ticket tier capacities
+  useEffect(() => {
+    if (ticketTiers && ticketTiers.length > 0) {
+      const total = ticketTiers.reduce((acc, tier) => acc + Number(tier.seats || 0), 0);
+      setFormData(prev => ({ ...prev, capacity: total.toString() }));
+    }
+  }, [ticketTiers]);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -40,6 +49,16 @@ const EditEvent = () => {
           description: e.description || '',
           image: e.image || ''
         });
+
+        if (e.ticketTiers && e.ticketTiers.length > 0) {
+          setTicketTiers(e.ticketTiers);
+        } else {
+          setTicketTiers([
+            { name: 'General Admission', priceMultiplier: 1.0, seats: e.totalSeats || 100 },
+            { name: 'VIP - Sky Deck', priceMultiplier: 1.5, seats: Math.round((e.totalSeats || 100) * 0.2) },
+            { name: 'Executive - Backstage', priceMultiplier: 2.5, seats: Math.round((e.totalSeats || 100) * 0.05) }
+          ]);
+        }
       } catch (err) {
         setError('Failed to load event data');
       } finally {
@@ -84,9 +103,10 @@ const EditEvent = () => {
         venue: formData.venue,
         image: formData.image,
         totalSeats: Number(formData.capacity),
-        basePrice: Number(formData.price)
+        basePrice: Number(formData.price),
+        ticketTiers: ticketTiers
       });
-      navigate('/my-events');
+      navigate('/creator');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update event');
     } finally {
@@ -219,6 +239,88 @@ const EditEvent = () => {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Ticket Tiers Configuration */}
+            <div className="glass-panel p-8 rounded-2xl flex flex-col gap-6 relative overflow-hidden stagger-item">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+              <h2 className="font-headline-sm text-white border-b border-white/10 pb-4">Ticket Tiers Configuration</h2>
+              
+              <div className="flex flex-col gap-4">
+                {ticketTiers.map((tier, index) => (
+                  <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end bg-white/5 p-4 rounded-xl relative border border-white/5">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Tier Name</label>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. VIP"
+                        value={tier.name}
+                        onChange={(e) => {
+                          const newTiers = [...ticketTiers];
+                          newTiers[index].name = e.target.value;
+                          setTicketTiers(newTiers);
+                        }}
+                        required
+                        className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-primary transition-all text-sm" 
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Price Multiplier</label>
+                      <input 
+                        type="number" 
+                        step="0.1"
+                        placeholder="e.g. 1.5"
+                        value={tier.priceMultiplier}
+                        onChange={(e) => {
+                          const newTiers = [...ticketTiers];
+                          newTiers[index].priceMultiplier = Number(e.target.value);
+                          setTicketTiers(newTiers);
+                        }}
+                        required
+                        className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-primary transition-all text-sm" 
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2 relative">
+                      <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Seats Capacity</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="number" 
+                          placeholder="e.g. 50"
+                          value={tier.seats}
+                          onChange={(e) => {
+                            const newTiers = [...ticketTiers];
+                            newTiers[index].seats = Number(e.target.value);
+                            setTicketTiers(newTiers);
+                          }}
+                          required
+                          className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-primary transition-all text-sm flex-1" 
+                        />
+                        {ticketTiers.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTicketTiers(ticketTiers.filter((_, i) => i !== index));
+                            }}
+                            className="p-2 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500/20 transition-colors flex items-center justify-center"
+                          >
+                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setTicketTiers([...ticketTiers, { name: '', priceMultiplier: 1.0, seats: 10 }]);
+                }}
+                className="w-fit px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-xl text-sm font-semibold transition-all flex items-center gap-1"
+              >
+                <span className="material-symbols-outlined text-[16px]">add</span> Add Ticket Tier
+              </button>
             </div>
 
             {/* Description */}

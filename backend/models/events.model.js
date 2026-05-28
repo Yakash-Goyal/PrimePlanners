@@ -53,6 +53,19 @@ const EventSchema = new mongoose.Schema({
         required: true 
     },
 
+    ticketTiers: {
+        type: [{
+            name: { type: String, required: true },
+            priceMultiplier: { type: Number, required: true, default: 1.0 },
+            seats: { type: Number, required: true }
+        }],
+        default: [
+            { name: 'General Admission', priceMultiplier: 1.0, seats: 100 },
+            { name: 'VIP - Sky Deck', priceMultiplier: 1.5, seats: 30 },
+            { name: 'Executive - Backstage', priceMultiplier: 2.5, seats: 10 }
+        ]
+    },
+
     organizer:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

@@ -6,7 +6,7 @@ import {PriceLog} from '../models/priceLog.model.js'
 // POST /api/bookings
 export const createBooking = async (req, res) => {
   try{
-    const {eventId, seats} = req.body
+    const {eventId, seats, ticketType} = req.body
     const event = await Event.findById(eventId)
     if(!event) return res.status(404).json({ message: 'Event not found' })
 
@@ -16,13 +16,20 @@ export const createBooking = async (req, res) => {
       })
     }
 
+    // Find requested ticket tier and multiplier
+    const requestedTier = ticketType || 'General Admission'
+    const tier = (event.ticketTiers || []).find(t => t.name === requestedTier)
+    const tierMultiplier = tier ? tier.priceMultiplier : 1.0
+
     const pricing = event.getCurrentPrice()
-    const totalPrice = pricing.finalPrice * seats
+    const tierPrice = Math.round(pricing.finalPrice * tierMultiplier)
+    const totalPrice = tierPrice * seats
 
     const booking = await Booking.create({
       user: req.user._id,
       event: eventId,
       seats,
+      ticketType: requestedTier,
       totalPrice,
       pricingSnapshot: {
         basePrice: pricing.basePrice,

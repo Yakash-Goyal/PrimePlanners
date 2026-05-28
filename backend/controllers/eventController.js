@@ -74,10 +74,19 @@ export const getEventById = async (req, res) => {
 // POST /api/events
 export const createEvent = async (req, res) => {
   try{
-    const { title, description, category, date, location, venue, image, totalSeats, basePrice } = req.body
+    const { title, description, category, date, location, venue, image, totalSeats, basePrice, ticketTiers } = req.body
+    
+    let calculatedSeats = totalSeats
+    if (ticketTiers && Array.isArray(ticketTiers) && ticketTiers.length > 0) {
+      calculatedSeats = ticketTiers.reduce((acc, tier) => acc + Number(tier.seats), 0)
+    }
+
     const event = await Event.create({
       title, description, category, date,
-      location, venue, image, totalSeats, basePrice,
+      location, venue, image, 
+      totalSeats: calculatedSeats, 
+      basePrice,
+      ticketTiers,
       organizer: req.user._id
     })
 
@@ -96,6 +105,11 @@ export const updateEvent = async (req, res) => {
     if (event.organizer.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized to update this event' })
     }
+
+    if (req.body.ticketTiers && Array.isArray(req.body.ticketTiers) && req.body.ticketTiers.length > 0) {
+      req.body.totalSeats = req.body.ticketTiers.reduce((acc, tier) => acc + Number(tier.seats), 0)
+    }
+
     const updated = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })
     res.status(200).json({ message: 'Event updated', event: updated })
 
