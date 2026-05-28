@@ -28,13 +28,15 @@ const Navbar = () => {
           <Link to="/" className={linkClass('/')}>Home</Link>
           <Link to="/about" className={linkClass('/about')}>About</Link>
           <Link to="/events" className={linkClass('/events')}>Events</Link>
-          <Link to="/my-events" className={linkClass('/my-events')}>My Events</Link>
+          {user?.role !== 'attender' && (
+            <Link to="/my-events" className={linkClass('/my-events')}>My Events</Link>
+          )}
           
           {user?.role === 'creator' && (
             <Link to="/creator" className={linkClass('/creator')}>Creator Hub</Link>
           )}
           {user?.role === 'attender' && (
-            <Link to="/attender" className={linkClass('/attender')}>My Tickets</Link>
+            <Link to="/attender" className={linkClass('/attender')}>My Events</Link>
           )}
           {user?.role === 'admin' && (
             <Link to="/admin" className={linkClass('/admin')}>Admin</Link>
