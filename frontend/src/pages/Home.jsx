@@ -185,51 +185,6 @@ const Home = () => {
       </section>
 
 
-
-      {/* ═══════════ VIBE CHECK CATEGORIES ═══════════ */}
-      <section className="px-[16px] md:px-[40px] mb-32">
-        <div className="max-w-[1440px] mx-auto">
-          <div className="section-header flex justify-between items-end mb-12">
-            <div>
-              <h2 className="font-headline-lg text-headline-lg text-white mb-2">Vibe Check</h2>
-              <p className="text-on-surface-variant">Curate your logistics ecosystem by energy level.</p>
-            </div>
-            <button onClick={() => navigate('/events')} className="text-tertiary font-bold hover:underline">Explore All Vibes</button>
-          </div>
-          <div className="vibes-grid grid grid-cols-2 md:grid-cols-5 gap-[24px]">
-            {CATEGORIES.map(({ title, img, tag, tagColor }) => (
-              <div key={title} className="vibe-card group relative aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer" onClick={() => navigate('/events')}>
-                <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-6 left-6">
-                  <h3 className="font-title-lg text-white mb-1">{title}</h3>
-                  <span className={`text-${tagColor} text-[10px] font-bold uppercase tracking-widest border border-${tagColor}/40 px-2 py-0.5 rounded backdrop-blur-md`}>{tag}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ TOP ARTISTS ═══════════ */}
-      <section className="px-[16px] md:px-[40px] mb-32 bg-black/30 py-24 border-y border-white/5">
-        <div className="max-w-[1440px] mx-auto text-center">
-          <h2 className="section-header font-headline-lg text-headline-lg text-white mb-4">Top Artists &amp; DJs</h2>
-          <p className="text-on-surface-variant mb-16 max-w-2xl mx-auto">Instant booking access to the world's most sought-after headliners currently trending in the ecosystem.</p>
-          <div className="artists-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-10">
-            {ARTISTS.map(({ name, img, glow }) => (
-              <div key={name} className="artist-card group flex flex-col items-center">
-                <div className="relative w-32 h-32 mb-6 group-hover:scale-105 transition-transform">
-                  <div className={`absolute inset-0 ${glow} rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity`} />
-                  <img alt={name} src={img} className="w-full h-full rounded-full object-cover border-2 border-white/10 p-1 bg-black relative z-10" />
-                </div>
-                <h4 className="font-bold text-white">{name}</h4>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════ FEATURED EVENTS BENTO ═══════════ */}
       <section className="px-[16px] md:px-[40px] mb-32">
         <div className="max-w-[1440px] mx-auto">
@@ -282,7 +237,47 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══════════ STATS ═══════════ */}
+      <section className="px-[16px] md:px-[40px] mb-32 bg-black/30 py-24 border-y border-white/5">
+        <div className="max-w-[1440px] mx-auto text-center">
+          <h2 className="section-header font-headline-lg text-headline-lg text-white mb-4">Top Artists &amp; DJs</h2>
+          <p className="text-on-surface-variant mb-16 max-w-2xl mx-auto">Instant booking access to the world's most sought-after headliners currently trending in the ecosystem.</p>
+          <div className="artists-grid grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-10">
+            {ARTISTS.map(({ name, img, glow }) => (
+              <div key={name} className="artist-card group flex flex-col items-center">
+                <div className="relative w-32 h-32 mb-6 group-hover:scale-105 transition-transform">
+                  <div className={`absolute inset-0 ${glow} rounded-full blur-md opacity-0 group-hover:opacity-40 transition-opacity`} />
+                  <img alt={name} src={img} className="w-full h-full rounded-full object-cover border-2 border-white/10 p-1 bg-black relative z-10" />
+                </div>
+                <h4 className="font-bold text-white">{name}</h4>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+        <section className="px-[16px] md:px-[40px] mb-32">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="section-header flex justify-between items-end mb-12">
+            <div>
+              <h2 className="font-headline-lg text-headline-lg text-white mb-2">Vibe Check</h2>
+              <p className="text-on-surface-variant">Curate your logistics ecosystem by energy level.</p>
+            </div>
+            <button onClick={() => navigate('/events')} className="text-tertiary font-bold hover:underline">Explore All Vibes</button>
+          </div>
+          <div className="vibes-grid grid grid-cols-2 md:grid-cols-5 gap-[24px]">
+            {CATEGORIES.map(({ title, img, tag, tagColor }) => (
+              <div key={title} className="vibe-card group relative aspect-[3/4] rounded-3xl overflow-hidden cursor-pointer" onClick={() => navigate('/events')}>
+                <img src={img} alt={title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-6 left-6">
+                  <h3 className="font-title-lg text-white mb-1">{title}</h3>
+                  <span className={`text-${tagColor} text-[10px] font-bold uppercase tracking-widest border border-${tagColor}/40 px-2 py-0.5 rounded backdrop-blur-md`}>{tag}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <section className="stats-section bg-black/40 py-32 border-y border-white/5 relative overflow-hidden">
         <div className="absolute w-[400px] h-[400px] bg-primary/10 -bottom-20 left-1/4 rounded-full filter blur-[120px] animate-blob" />
         <div className="max-w-[1440px] mx-auto px-[16px] md:px-[40px] relative z-10">

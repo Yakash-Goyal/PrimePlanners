@@ -186,31 +186,17 @@ const CreateEvent = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-2">
-                  <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Capacity</label>
-                  <input 
-                    type="number" 
-                    name="capacity"
-                    placeholder="e.g. 2500"
-                    value={formData.capacity}
-                    onChange={handleChange}
-                    required
-                    className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,183,255,0.3)] transition-all font-body-lg text-body-lg" 
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Ticket Price (₹)</label>
-                  <input 
-                    type="number" 
-                    name="price"
-                    placeholder="e.g. 15000"
-                    value={formData.price}
-                    onChange={handleChange}
-                    required
-                    className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,183,255,0.3)] transition-all font-body-lg text-body-lg" 
-                  />
-                </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Ticket Price (₹)</label>
+                <input 
+                  type="number" 
+                  name="price"
+                  placeholder="e.g. 15000"
+                  value={formData.price}
+                  onChange={handleChange}
+                  required
+                  className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-secondary focus:shadow-[0_0_15px_rgba(0,183,255,0.3)] transition-all font-body-lg text-body-lg" 
+                />
               </div>
             </div>
 

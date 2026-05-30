@@ -25,6 +25,7 @@ const Events = () => {
         const formattedEvents = data.events.map(e => ({
           ...e,
           id: e._id,
+          rawDate: e.date,
           date: new Date(e.date).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
