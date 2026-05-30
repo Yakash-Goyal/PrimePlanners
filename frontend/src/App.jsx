@@ -36,6 +36,12 @@ const BackgroundBlobs = () => (
 );
 
 function App() {
+  useEffect(() => {
+    const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
+    fetch(backendBase, { method: 'GET', mode: 'cors' }).catch(() => {
+    });
+  }, []);
+
   return (
     <AuthProvider>
       <Router>

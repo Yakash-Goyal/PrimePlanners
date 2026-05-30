@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import gsap from 'gsap';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import ImageUploader from '../components/ImageUploader';
 
 const EditEvent = () => {
   const { id } = useParams();
@@ -340,16 +341,10 @@ const EditEvent = () => {
                 ></textarea>
               </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-on-surface-variant font-label-md uppercase tracking-wider text-xs">Cover Image URL</label>
-                <input 
-                  type="text" 
-                  name="image"
-                  value={formData.image}
-                  onChange={handleChange}
-                  className="bg-surface/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-tertiary focus:shadow-[0_0_15px_rgba(0,255,204,0.3)] transition-all font-body-lg text-body-lg" 
-                />
-              </div>
+              <ImageUploader
+                currentImage={formData.image}
+                onUpload={(url) => setFormData(prev => ({ ...prev, image: url }))}
+              />
             </div>
 
             <div className="flex gap-4 stagger-item">

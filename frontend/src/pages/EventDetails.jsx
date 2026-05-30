@@ -272,7 +272,7 @@ const EventDetails = () => {
 
             <div className="h-px bg-white/10 my-4"></div>
 
-            <h2 className="font-headline-lg text-headline-lg text-primary">Operation Brief</h2>
+            <h2 className="font-headline-lg text-headline-lg text-primary">Description</h2>
             <div className="font-body-lg text-body-lg text-on-surface-variant leading-relaxed space-y-4">
               <p>{event.description}</p>
             </div>
@@ -390,14 +390,14 @@ const EventDetails = () => {
                     {event.ticketTiers && event.ticketTiers.length > 0 ? (
                       event.ticketTiers.map((tier, idx) => (
                         <option key={idx} className="bg-surface-container" value={tier.name}>
-                          {tier.name} ({tier.priceMultiplier}x Multiplier)
+                          {tier.name}
                         </option>
                       ))
                     ) : (
                       <>
                         <option className="bg-surface-container" value="General Admission">General Admission</option>
-                        <option className="bg-surface-container" value="VIP - Sky Deck">VIP (1.5x Multiplier)</option>
-                        <option className="bg-surface-container" value="Executive - Backstage">Executive (2.5x Multiplier)</option>
+                        <option className="bg-surface-container" value="VIP - Sky Deck">VIP - Sky Deck</option>
+                        <option className="bg-surface-container" value="Executive - Backstage">Executive</option>
                       </>
                     )}
                   </select>
