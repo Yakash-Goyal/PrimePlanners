@@ -10,6 +10,12 @@ export const createBooking = async (req, res) => {
     const event = await Event.findById(eventId)
     if(!event) return res.status(404).json({ message: 'Event not found' })
 
+    if(new Date(event.date) < new Date()) {
+      return res.status(400).json({
+        message: 'This event has already occurred'
+      })
+    }
+
     if(event.bookedSeats + seats > event.totalSeats) {
       return res.status(400).json({
         message: `Only ${event.totalSeats - event.bookedSeats} seats remaining`

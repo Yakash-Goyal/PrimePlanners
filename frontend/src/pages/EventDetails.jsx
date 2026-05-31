@@ -91,6 +91,7 @@ const EventDetails = () => {
   }, [loading, event]);
 
   const handleBookNow = () => {
+    if (isClosed) return;
     if (!user) {
       navigate('/auth');
       return;
@@ -120,6 +121,8 @@ const EventDetails = () => {
   }
 
   const eventDate = new Date(event.date);
+  const isClosed = eventDate < new Date();
+
   const formattedDate = eventDate.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -250,7 +253,6 @@ const EventDetails = () => {
         </div>
       </section>
 
-      {/* ═══════════ CONTENT GRID ═══════════ */}
       <section className="max-w-[1440px] mx-auto px-[16px] md:px-[40px] py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">
         
         {/* LEFT COLUMN */}
@@ -437,10 +439,10 @@ const EventDetails = () => {
 
               <button
                 onClick={handleBookNow}
-                disabled={seatsRemaining <= 0}
+                disabled={seatsRemaining <= 0 || isClosed}
                 className="w-full py-4 bg-primary text-white font-label-caps text-sm uppercase tracking-widest rounded-2xl neon-glow-primary hover:brightness-110 active:scale-95 transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {seatsRemaining <= 0 ? 'SOLD OUT' : 'RESERVE NOW'}
+                {isClosed ? 'EVENT CLOSED' : (seatsRemaining <= 0 ? 'SOLD OUT' : 'RESERVE NOW')}
                 <Zap className="w-4 h-4" />
               </button>
 

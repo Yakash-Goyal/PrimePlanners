@@ -36,25 +36,30 @@ const AdminCommand = () => {
   const [topEvents, setTopEvents] = useState([]);
   const [pricingMonitor, setPricingMonitor] = useState([]);
   const [recentBookings, setRecentBookings] = useState([]);
+  const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [overviewRes, regRes, catRes, topRes, priceRes, bookingsRes] = await Promise.all([
-          api.get('/analytics/overview'),
-          api.get('/analytics/registrations'),
-          api.get('/analytics/categories'),
-          api.get('/analytics/top-events'),
-          api.get('/analytics/pricing-monitor'),
-          api.get('/bookings/all'),
+        const [overviewRes, regRes, catRes, topRes, priceRes, bookingsRes, usersRes] = await Promise.all([
+          api.get('/analytics/overview').catch(err => { console.error('Overview fetch failed:', err); return null; }),
+          api.get('/analytics/registrations').catch(err => { console.error('Registrations fetch failed:', err); return null; }),
+          api.get('/analytics/categories').catch(err => { console.error('Categories fetch failed:', err); return null; }),
+          api.get('/analytics/top-events').catch(err => { console.error('Top Events fetch failed:', err); return null; }),
+          api.get('/analytics/pricing-monitor').catch(err => { console.error('Pricing Monitor fetch failed:', err); return null; }),
+          api.get('/bookings/all').catch(err => { console.error('Bookings fetch failed:', err); return null; }),
+          api.get('/analytics/users').catch(err => { console.error('Users list fetch failed:', err); return null; })
         ]);
-        setStats(overviewRes.data);
-        setRegistrations(regRes.data.data || []);
-        setCategories(catRes.data.data || []);
-        setTopEvents(topRes.data.data || []);
-        setPricingMonitor(priceRes.data.monitor || []);
-        const allBookings = bookingsRes.data.bookings || [];
-        setRecentBookings(allBookings.slice(0, 10));
+        if (overviewRes) setStats(overviewRes.data);
+        if (regRes) setRegistrations(regRes.data.data || []);
+        if (catRes) setCategories(catRes.data.data || []);
+        if (topRes) setTopEvents(topRes.data.data || []);
+        if (priceRes) setPricingMonitor(priceRes.data.monitor || []);
+        if (usersRes) setUsersList(usersRes.data.users || []);
+        if (bookingsRes) {
+          const allBookings = bookingsRes.data.bookings || [];
+          setRecentBookings(allBookings.slice(0, 10));
+        }
       } catch (err) {
         console.error('Admin fetch failed:', err);
       } finally {
@@ -343,6 +348,54 @@ const AdminCommand = () => {
               )}
             </div>
           </div>
+        </section>
+
+        {/* Platform Users */}
+        <section className="data-table">
+          <div className="flex items-center gap-3 mb-5">
+            <Users className="w-5 h-5 text-tertiary" />
+            <h3 className="font-headline-lg text-white">Registered Users</h3>
+          </div>
+          {usersList.length === 0 ? (
+            <div className="glass-card rounded-2xl p-12 text-center text-on-surface-variant">No registered users found.</div>
+          ) : (
+            <div className="glass-card rounded-2xl overflow-hidden border border-white/5">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-white/5 border-b border-white/10">
+                    <tr>
+                      <th className="px-5 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-xs">Name</th>
+                      <th className="px-5 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-xs">Email</th>
+                      <th className="px-5 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-xs">Role</th>
+                      <th className="px-5 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-xs">Bio</th>
+                      <th className="px-5 py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-xs text-right">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {usersList.map((usr) => (
+                      <tr key={usr._id} className="hover:bg-white/5 transition-colors">
+                        <td className="px-5 py-4 font-semibold text-white">{usr.name}</td>
+                        <td className="px-5 py-4 text-on-surface-variant">{usr.email}</td>
+                        <td className="px-5 py-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
+                            usr.role === 'admin' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                            usr.role === 'creator' ? 'bg-primary/20 text-primary border-primary/30' :
+                            'bg-tertiary/20 text-tertiary border-tertiary/30'
+                          }`}>
+                            {usr.role}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4 text-on-surface-variant max-w-xs truncate">{usr.bio || <span className="text-white/20 italic">No bio</span>}</td>
+                        <td className="px-5 py-4 text-right text-on-surface-variant">
+                          {usr.createdAt ? new Date(usr.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Quick Actions */}

@@ -79,10 +79,17 @@ const MyEvents = () => {
           <h1 className="font-display-md text-display-md text-white">My Events</h1>
           <p className="text-on-surface-variant font-body-lg mt-1">Your tickets and events in one place.</p>
         </div>
-        <Link to="/events" className="bg-white/5 hover:bg-white/10 text-white px-6 py-2 rounded-full font-label-md uppercase tracking-wider transition-colors border border-white/10 flex items-center gap-2">
-          <span className="material-symbols-outlined text-[18px]">explore</span>
-          Browse Events
-        </Link>
+        {activeTab === 'created' ? (
+          <Link to="/create-event" className="bg-primary/25 border border-primary/50 hover:bg-primary text-white hover:text-white px-6 py-2 rounded-full font-label-md uppercase tracking-wider transition-all flex items-center gap-2 shadow-[0_0_15px_rgba(255,42,95,0.3)]">
+            <span className="material-symbols-outlined text-[18px]">add</span>
+            Create Event
+          </Link>
+        ) : (
+          <Link to="/events" className="bg-white/5 hover:bg-white/10 text-white px-6 py-2 rounded-full font-label-md uppercase tracking-wider transition-colors border border-white/10 flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">explore</span>
+            Browse Events
+          </Link>
+        )}
       </div>
 
       {/* Tabs */}

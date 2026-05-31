@@ -7,7 +7,8 @@ import {
   getConversionFunnel,
   getPriceElasticity,
   getTopEvents,
-  getPricingMonitor
+  getPricingMonitor,
+  getUsers
 } from '../controllers/analyticsController.js'
 import {protect, authorize} from '../middleware/authMiddleware.js'
 
@@ -21,5 +22,6 @@ router.get('/funnel', protect, authorize('admin'), getConversionFunnel)
 router.get('/top-events', protect, authorize('admin'), getTopEvents)
 router.get('/pricing-monitor', protect, authorize('admin'), getPricingMonitor)
 router.get('/price-elasticity/:eventId', protect, authorize('admin'), getPriceElasticity)
+router.get('/users', protect, authorize('admin'), getUsers)
 
 export default router

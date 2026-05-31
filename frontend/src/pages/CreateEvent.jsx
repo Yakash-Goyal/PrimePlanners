@@ -83,7 +83,7 @@ const CreateEvent = () => {
       <div className="flex flex-col lg:flex-row gap-12 relative">
         
         {/* Form Section */}
-        <div className="w-full lg:w-[60%] flex flex-col gap-8 stagger-item">
+        <div className="w-full lg:w-[60%] flex flex-col gap-8">
           <div>
             <h1 className="font-display-md text-display-md text-white">Create Event</h1>
             <p className="text-on-surface-variant font-body-lg text-body-lg mt-2">Design your next unforgettable experience.</p>
@@ -309,7 +309,7 @@ const CreateEvent = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full py-4 bg-primary text-white font-headline-lg-mobile text-headline-lg-mobile uppercase tracking-wide rounded-xl neon-glow-primary hover:bg-primary-fixed hover:scale-[1.02] transition-all active:scale-95 stagger-item disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-primary text-white font-title-lg font-bold uppercase tracking-wide rounded-xl neon-glow-primary hover:bg-primary-fixed hover:scale-[1.02] transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Publishing...' : 'Publish Event'}
             </button>

@@ -221,3 +221,13 @@ export const getPricingMonitor = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+// GET /api/analytics/users
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, 'name email role bio createdAt').sort({ createdAt: -1 })
+    res.status(200).json({ users })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}

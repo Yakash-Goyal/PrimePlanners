@@ -176,47 +176,6 @@ const AttenderHub = () => {
           </div>
         </section>
 
-        <section className="space-y-6">
-          <div className="flex justify-between items-center px-2">
-            <h2 className="font-headline-lg text-headline-lg">
-              Recommended for You{' '}
-              <span className="text-tertiary text-body-lg ml-2 font-normal opacity-70">Based on 'Vibe Check'</span>
-            </h2>
-            <div className="flex gap-2">
-              <button onClick={() => scroll(-1)} className="p-2 glass-card rounded-full hover:bg-white/10 transition-colors cursor-pointer">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button onClick={() => scroll(1)} className="p-2 glass-card rounded-full hover:bg-white/10 transition-colors cursor-pointer">
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          <div ref={scrollRef} className="flex gap-[24px] overflow-x-auto pb-6 px-2 scroll-smooth" style={{ scrollbarWidth: 'none' }}>
-            {recommendations.map((rec) => (
-              <div key={rec.id} className="rec-card min-w-[240px] group cursor-pointer flex-shrink-0" onClick={() => navigate('/events')}>
-                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden glass-card mb-4">
-                  <img
-                    src={rec.image}
-                    alt={rec.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <span className={`bg-${rec.tagColor}/20 backdrop-blur-md border border-${rec.tagColor}/50 text-${rec.tagColor} text-label-md px-3 py-1 rounded-full uppercase`}>
-                      {rec.tag}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <p className="text-on-surface font-title-lg mb-1">{rec.title}</p>
-                    <p className="text-on-surface-variant text-body-md">{rec.venue} • {rec.date}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         <section className="bookings-section space-y-6">
           <h2 className="font-headline-lg text-headline-lg px-2">My Bookings</h2>
 
@@ -305,7 +264,7 @@ const AttenderHub = () => {
                     <div key={booking._id} className="booking-row glass-card rounded-2xl p-4 space-y-4">
                       <div className="flex items-center gap-4">
                         <img
-                          src={booking.event?.image || concertBg}
+                           src={booking.event?.image || concertBg}
                           alt={booking.event?.title}
                           className="w-16 h-16 rounded-xl object-cover ring-1 ring-white/10"
                         />
@@ -349,6 +308,47 @@ const AttenderHub = () => {
               </div>
             </>
           )}
+        </section>
+
+        <section className="space-y-6">
+          <div className="flex justify-between items-center px-2">
+            <h2 className="font-headline-lg text-headline-lg">
+              Recommended for You{' '}
+              <span className="text-tertiary text-body-lg ml-2 font-normal opacity-70">Based on 'Vibe Check'</span>
+            </h2>
+            <div className="flex gap-2">
+              <button onClick={() => scroll(-1)} className="p-2 glass-card rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scroll(1)} className="p-2 glass-card rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div ref={scrollRef} className="flex gap-[24px] overflow-x-auto pb-6 px-2 scroll-smooth" style={{ scrollbarWidth: 'none' }}>
+            {recommendations.map((rec) => (
+              <div key={rec.id} className="rec-card min-w-[240px] group cursor-pointer flex-shrink-0" onClick={() => navigate('/events')}>
+                <div className="relative aspect-[4/5] rounded-2xl overflow-hidden glass-card mb-4">
+                  <img
+                    src={rec.image}
+                    alt={rec.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <span className={`bg-${rec.tagColor}/20 backdrop-blur-md border border-${rec.tagColor}/50 text-${rec.tagColor} text-label-md px-3 py-1 rounded-full uppercase`}>
+                      {rec.tag}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80"></div>
+                  <div className="absolute bottom-6 left-6 right-6">
+                    <p className="text-on-surface font-title-lg mb-1">{rec.title}</p>
+                    <p className="text-on-surface-variant text-body-md">{rec.venue} • {rec.date}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
     </div>

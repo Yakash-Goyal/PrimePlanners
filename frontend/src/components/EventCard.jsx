@@ -53,12 +53,18 @@ const EventCard = ({ event, className = '' }) => {
           </div>
         </div>
 
-        <Link 
-          to={`/event/${event.id}`}
-          className={`block w-full text-center py-3 rounded-xl border font-medium transition-colors ${isClosed ? 'bg-white/5 border-white/5 text-gray-500 cursor-default' : 'bg-white/5 hover:bg-white/10 border-white/10 text-white'}`}
-        >
-          {isClosed ? 'Event Closed' : 'View Details'}
-        </Link>
+        {isClosed ? (
+          <div className="block w-full text-center py-3 rounded-xl border border-white/5 bg-white/5 text-gray-500 font-medium cursor-default">
+            Event Closed
+          </div>
+        ) : (
+          <Link 
+            to={`/event/${event.id}`}
+            className="block w-full text-center py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white font-medium transition-colors"
+          >
+            View Details
+          </Link>
+        )}
       </div>
     </div>
   );
