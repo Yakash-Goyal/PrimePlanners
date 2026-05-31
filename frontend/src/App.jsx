@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import Lenis from 'lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
@@ -19,6 +22,8 @@ import Contact from './pages/Contact';
 import Events from './pages/Events';
 import NotFound from './pages/NotFound';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -37,9 +42,33 @@ const BackgroundBlobs = () => (
 
 function App() {
   useEffect(() => {
+    // Wake up backend
     const backendBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '');
     fetch(backendBase, { method: 'GET', mode: 'cors' }).catch(() => {
     });
+
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.5,
+    });
+
+    // Synchronize ScrollTrigger with Lenis
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const updateRaf = (time) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(updateRaf);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      lenis.destroy();
+      gsap.ticker.remove(updateRaf);
+    };
   }, []);
 
   return (

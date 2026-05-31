@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import EventCard from '../components/EventCard';
 import { Search, Filter } from 'lucide-react';
 import api from '../api/axios';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Events = () => {
   const headerRef = useRef(null);
@@ -62,10 +65,30 @@ const Events = () => {
   useEffect(() => {
     if (gridRef.current && filteredEvents.length > 0) {
       const cards = gridRef.current.querySelectorAll('.event-item');
-      gsap.fromTo(cards,
-        { scale: 0.9, opacity: 0, y: 30 },
-        { scale: 1, opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: "back.out(1.5)", clearProps: "all" }
-      );
+      
+      ScrollTrigger.getAll().forEach(t => {
+        if (t.trigger && gridRef.current.contains(t.trigger)) {
+          t.kill();
+        }
+      });
+
+      cards.forEach((card) => {
+        gsap.fromTo(card,
+          { scale: 0.95, opacity: 0, y: 50 },
+          {
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 90%",
+              toggleActions: "play none none none"
+            }
+          }
+        );
+      });
     }
   }, [filter, events]);
 
