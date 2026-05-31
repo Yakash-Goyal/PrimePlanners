@@ -39,6 +39,7 @@ const AdminCommand = () => {
   const [usersList, setUsersList] = useState([]);
 
   useEffect(() => {
+    let active = true;
     const fetchAll = async () => {
       try {
         const [overviewRes, regRes, catRes, topRes, priceRes, bookingsRes, usersRes] = await Promise.all([
@@ -50,6 +51,7 @@ const AdminCommand = () => {
           api.get('/bookings/all').catch(err => { console.error('Bookings fetch failed:', err); return null; }),
           api.get('/analytics/users').catch(err => { console.error('Users list fetch failed:', err); return null; })
         ]);
+        if (!active) return;
         if (overviewRes) setStats(overviewRes.data);
         if (regRes) setRegistrations(regRes.data.data || []);
         if (catRes) setCategories(catRes.data.data || []);
@@ -61,12 +63,16 @@ const AdminCommand = () => {
           setRecentBookings(allBookings.slice(0, 10));
         }
       } catch (err) {
+        if (!active) return;
         console.error('Admin fetch failed:', err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     fetchAll();
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {

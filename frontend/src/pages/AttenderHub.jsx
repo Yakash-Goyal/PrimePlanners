@@ -34,17 +34,23 @@ const AttenderHub = () => {
   const [cancelling, setCancelling] = useState(null);
 
   useEffect(() => {
+    let active = true;
     const fetchBookings = async () => {
       try {
         const { data } = await api.get('/bookings/my');
+        if (!active) return;
         setBookings(data.bookings);
       } catch (error) {
+        if (!active) return;
         console.error('Failed to fetch bookings', error);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     fetchBookings();
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {

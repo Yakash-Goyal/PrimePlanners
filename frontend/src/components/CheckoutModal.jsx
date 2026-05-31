@@ -62,7 +62,7 @@ const CheckoutModal = ({isOpen, onClose, tickets, ticketPrice, eventName, eventI
         {step !== 2 && (
           <button
             onClick={onClose}
-            className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-on-surface-variant transition-colors z-10"
+            className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full bg-white/5 hover:bg-white/10 text-on-surface-variant transition-colors z-30"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>

@@ -44,18 +44,24 @@ const EventDetails = () => {
   const [pulseHeights, setPulseHeights] = useState([40, 65, 50, 85, 70, 95, 80, 45, 60, 75]);
 
   useEffect(() => {
+    let active = true;
     const fetchEvent = async () => {
       try {
         const { data } = await api.get(`/events/${id}`);
+        if (!active) return;
         setEvent(data.event);
       } catch (err) {
+        if (!active) return;
         setError('Failed to load event details');
         console.error(err);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     fetchEvent();
+    return () => {
+      active = false;
+    };
   }, [id]);
 
   useEffect(() => {

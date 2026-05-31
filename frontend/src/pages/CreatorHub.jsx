@@ -11,20 +11,26 @@ const CreatorHub = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
     const fetchMyEvents = async () => {
       try{
         const {data} = await api.get('/events');
+        if (!active) return;
         const myEvents = data.events.filter(e => e.organizer?._id === user?._id);
         setEvents(myEvents);
       } catch(error){
+        if (!active) return;
         console.error('Failed to fetch creator events', error);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     if (user?._id) {
       fetchMyEvents();
     }
+    return () => {
+      active = false;
+    };
   },[user]);
 
   useEffect(() => {

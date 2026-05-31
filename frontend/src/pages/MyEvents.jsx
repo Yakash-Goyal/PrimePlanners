@@ -13,25 +13,31 @@ const MyEvents = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
     const fetchData = async () => {
       try {
         const [bookingsRes, eventsRes] = await Promise.all([
           api.get('/bookings/my'),
           api.get('/events')
         ]);
+        if (!active) return;
         setBookings(bookingsRes.data.bookings || []);
         const myCreated = (eventsRes.data.events || []).filter(
           e => e.organizer?._id === user?._id
         );
         setCreatedEvents(myCreated);
       } catch (error) {
+        if (!active) return;
         console.error('Failed to fetch data', error);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     if (user) fetchData();
     else setLoading(false);
+    return () => {
+      active = false;
+    };
   }, [user]);
 
   useEffect(() => {
